@@ -1,0 +1,74 @@
+@hostname = localhost
+@port = 4000
+@host = {{hostname}}:{{port}}
+@contentType = application/json
+
+# @name criandoUmUsuario
+POST http://{{host}}/api/users
+content-type: {{contentType}}
+
+{
+    "name": "Maria da Silva Sauro",
+    "nickname": "mariasss1",
+    "email": "marias1@mail.com",
+    "age": 31,
+    "password": "123456789"
+}
+
+### CRIANDO OUTRO USUÁRIO
+
+# @name criandoOutroUsuario
+POST http://{{host}}/api/users
+content-type: {{contentType}}
+
+{
+    "name": "João da Silva Sauro",
+    "nickname": "joaosss1",
+    "email": "joaosss1@mail.com",
+    "age": 31,
+    "password": "123456789"
+}
+
+### FAZENDO UM DEPÓSITO
+
+# @name fazendoDeposito
+POST http://{{host}}/api/accounts/{{criandoUmUsuario.response.body.account.id}}/deposit
+content-type: application/json
+
+{
+    "value": "50.0"
+}
+
+### ENVIANDO UM VALOR INVÁLIDO
+
+POST http://{{host}}/api/accounts/{{criandoUmUsuario.response.body.account.id}}/deposit
+content-type: application/json
+
+{
+    "value": "VALOR-INVÁLIDO"
+}
+
+### FAZENDO UM SAQUE
+
+# @name fazendoSaque
+POST http://{{host}}/api/accounts/{{criandoUmUsuario.response.body.account.id}}/withdraw
+content-type: application/json
+
+{
+    "value": "50.0"
+}
+
+### REALIZANDO UMA TRANSAÇÃO
+
+@idUsuario1 = {{criandoUmUsuario.response.body.account.id}}
+@idUsuario2 = {{criandoOutroUsuario.response.body.account.id}}
+
+# @name fazendoSaque
+POST http://{{host}}/api/accounts/transaction
+content-type: application/json
+
+{
+    "from": "{{idUsuario1}}",
+    "to": "{{idUsuario2}}",
+    "value": "50.0"
+}
